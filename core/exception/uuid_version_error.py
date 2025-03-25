@@ -1,0 +1,2 @@
+class UUIDVersionError(Exception):
+    pass

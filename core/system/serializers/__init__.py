@@ -1,0 +1,1 @@
+from .user_basic_info_serializer import UserBasicInfoSerializer
