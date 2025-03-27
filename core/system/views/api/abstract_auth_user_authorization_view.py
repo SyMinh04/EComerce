@@ -1,13 +1,8 @@
 import json
-
-from core.system.authentication.backends.authenticators import AuthApplicationBasicAuthentication
-from core.system.authentication.reponses import AuthorizedResponse
-from core.utils.request import get_portal_type_from_request, get_origin_domain_from_request
-from core.views.api import BaseAPIViewSet
+from rest_framework.views import APIView
 
 
-class AbstractUserAuthorizationTokenView(BaseAPIViewSet):
-    authentication_classes = [AuthApplicationBasicAuthentication]
+class AbstractUserAuthorizationTokenView(APIView):
     serializer = None
     auth_service = None
     is_refresh_token = False
@@ -32,14 +27,14 @@ class AbstractUserAuthorizationTokenView(BaseAPIViewSet):
         Login by user credential
         """
         token_data = self.auth_service.user_credential_login(request, **data)
-        return AuthorizedResponse(data=token_data, path=get_portal_type_from_request(request), domain=get_origin_domain_from_request(request))
+        return token_data
 
     def _refresh(self, request, data):
         """
         Refresh access token
         """
         token_data = self.auth_service.renew_access_token(request, **data)
-        return AuthorizedResponse(data=token_data, path=get_portal_type_from_request(request), domain=get_origin_domain_from_request(request))
+        # return AuthorizedResponse(data=token_data, path=get_portal_type_from_request(request), domain=get_origin_domain_from_request(request))
 
     def get_request_data(self, request):
         """

@@ -2,9 +2,11 @@ from django_cassandra_engine.models import DjangoCassandraModel
 from cassandra.cqlengine import columns
 
 from core.system.enums import AuthApplicationType, AuthApplicationGrantType
+from utils.uuid import generate_uuid
 
 
 class AuthApplication(DjangoCassandraModel):
+    uid = columns.UUID(primary_key=True, default=generate_uuid)
     application_name = columns.Text(required=False)
     client_type = columns.Text(max_length=20, default=AuthApplicationType.CLIENT_CONFIDENTIAL, required=False)
     client_id = columns.Text(required=True)

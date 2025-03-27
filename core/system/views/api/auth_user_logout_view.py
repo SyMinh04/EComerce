@@ -1,11 +1,7 @@
 from django.utils.translation import gettext as _
 from rest_framework import status
 
-from core.system.authentication.models import AuthUserAccessToken
-from core.system.authentication.services import AuthenticationService
-from core.views.api.protected import BaseProtectedApiView
-from core.system.authentication.backends.authenticators import AcceptInActiveAuthentication
-from core.system.authentication.reponses import AuthorizedResponse
+
 
 
 class AuthUserLogoutView(BaseProtectedApiView):

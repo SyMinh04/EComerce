@@ -7,7 +7,7 @@ from core.system.enums import AuthApplicationGrantType
 
 
 class AuthUserAccessToken(DjangoCassandraModel):
-    user_id = columns.UUID(primary_key=True, partition_key=True, required=True, index=True)
+    user_id = columns.UUID(primary_key=True, partition_key=True, required=True)
     user_type = columns.Text(required=True)
     scopes = columns.Text(required=False)
     application_id = columns.UUID(required=True, index=True)
@@ -34,9 +34,6 @@ class AuthUserAccessToken(DjangoCassandraModel):
     class Meta:
         get_pk_field = 'uid'
         db_table = 'auth_user_access_tokens'
-
-
-
 
     def is_valid(self, scopes=None):
         """

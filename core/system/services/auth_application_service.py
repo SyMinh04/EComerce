@@ -1,4 +1,4 @@
-from core.system.authentication.repositories import AuthApplicationRepository
+from core.system.repositories import AuthApplicationRepository
 
 
 class AuthApplicationService:

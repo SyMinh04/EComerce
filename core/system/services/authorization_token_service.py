@@ -3,18 +3,10 @@ from datetime import timedelta
 from urllib.parse import unquote_plus
 
 from django.contrib.auth.hashers import check_password
+from django.db.models.functions import Now
 from django.utils.translation import gettext as _
 
-from core.exceptions import BadRequest
-from core.system.authentication.enums import AuthApplicationGrantType
-from core.system.authentication.exceptions.errors import InvalidClientError, UnsupportedGrantTypeError, \
-    TokenNotFoundError
-from core.system.authentication.models import AuthApplication
-from core.system.authentication.repositories import AuthRefreshTokenRepository
-from core.system.authentication.repositories.auth_access_token_repository import AuthAccessTokenRepository
-from core.cryptography.jwcrypto.jwt import create_jwt_token, get_jwt_settings
-from core.utils.content_type.resolver import get_content_object
-from core.utils.time import current_time
+from core.system.repositories import AuthAccessTokenRepository, AuthRefreshTokenRepository
 
 
 class AuthorizationTokenService:
@@ -25,13 +17,13 @@ class AuthorizationTokenService:
     def __init__(self):
         self.access_token_repo = AuthAccessTokenRepository()
         self.refresh_token_repo = AuthRefreshTokenRepository()
-        self.jwt_settings = get_jwt_settings()
+        # self.jwt_settings = get_jwt_settings()
 
     def create_access_token(self, request, user, grant_from=None, **kwargs):
         """
         Create access_token grant type password for the given user
         """
-        now = current_time()
+        now = Now()
         application = self.get_authenticate_application(request)
         access_token = self.access_token_repo.create(
             user_id=user.uid,

@@ -1,48 +1,45 @@
 from django.utils.translation import gettext as _
 
 from accounts.auth_user.models import AuthUser
-from core.system.authentication.enums import AuthApplicationGrantType
-from core.system.authentication.services.authorization_token_service import AuthorizationTokenService
-from core.exceptions import AuthenticationFailed
+from core.exception import AuthenticationFailed
+from core.system.services.authorization_token_service import AuthorizationTokenService
 
 
 class AuthenticationService:
-    auth_model = AuthUser
+    auth_model = None
     check_active = True
 
-    def user_credential_login(self, request, username: str, password: str, scope: str=None, **kwargs):
+    def user_credential_login(self, request, user_name, password, scope: str = None, **kwargs):
         """
-        User login from username password
+        User credential login
+        :param request:
+        :param user_name:
+        :param password:
+        :param scope:
+        :param kwargs:
+        :return:
         """
-        if username is None:
-            username = kwargs.get(self.auth_model.USERNAME_FIELD)
-        if username is None or password is None:
-            return
-
         try:
-            # Check if the input is an email address
-            if '@' in username:
-                user = self.auth_model.objects.get(email=username, is_deleted=False)
+            account = None
+            if '@' in user_name:
+                account = self.auth_model.filter(email=user_name).first()
             else:
-                # If not an email, check for username
-                user = self.auth_model.objects.get(username=username, is_deleted=False)
-
-            if user is None:
+                account = self.auth_model.filter(username=user_name).first()
+            if account is None:
                 raise AuthenticationFailed(_('error_invalid_login_credentials'))
 
-            if self.check_active and not user.is_active:
+            if not account.is_active:
                 raise AuthenticationFailed(_('error_user_inactive_or_deleted'))
 
-            if user.get_user_type() != scope:
+            if account.get_user_type() != scope:
                 raise AuthenticationFailed(_('invalid_user_scope'))
 
-        except self.auth_model.DoesNotExist:
+            if not account.verify_password(password):
+                raise AuthenticationFailed(_('error_invalid_login_credentials'))
+
+            return self.create_authorization_token(request, account, scope=scope, **kwargs)
+        except Exception as e:
             raise AuthenticationFailed(_('error_invalid_login_credentials'))
-
-        if user.check_password(password):
-            return self.create_authorization_token(request, user, scope=scope, **kwargs)
-
-        raise AuthenticationFailed(_('error_invalid_login_credentials'))
 
     def create_authorization_token(self, request, user, **kwargs):
         """
