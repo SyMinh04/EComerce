@@ -6,7 +6,13 @@ from django.contrib.auth.hashers import check_password
 from django.db.models.functions import Now
 from django.utils.translation import gettext as _
 
+from core.exception import BadRequest
+from core.system.authentication.exceptions.errors import TokenNotFoundError, InvalidClientError, \
+    UnsupportedGrantTypeError
+from core.system.enums import AuthApplicationGrantType
+from core.system.models import AuthApplication
 from core.system.repositories import AuthAccessTokenRepository, AuthRefreshTokenRepository
+from utils.time import current_time
 
 
 class AuthorizationTokenService:

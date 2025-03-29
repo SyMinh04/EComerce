@@ -1,15 +1,12 @@
-from django.urls import include, path
+from django.urls import path
 from rest_framework import routers
 
-from accounts.user.view import UserRegisterView, UserLoginView
-from accounts.user.view.user_model_view_set import ProtectedView
+from accounts.user.view import UserRegisterView
+from accounts.user.view.user_login_view_set import UserLoginView
 
 router = routers.DefaultRouter(trailing_slash=False)
 
 urlpatterns = [
-    path('register', UserRegisterView.as_view(), name='api_user_register'),  # Corrected
-    path('auth/token', UserLoginView.as_view(), name='api_user_auth_authorize'),  # Corrected
-    path('test', ProtectedView.as_view(), name='api_user_auth_authorize'),  # Corrected
-
-    path('', include(router.urls), name='api_user'),
+    path('register', UserRegisterView.as_view({'post': 'create_user'}), name='api_user_auth_authorize'),
+    path('auth/token', UserLoginView.as_view({'post': 'get_access_token'}), name='api_user_auth_authorize'),
 ]

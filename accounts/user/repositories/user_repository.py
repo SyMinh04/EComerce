@@ -5,6 +5,7 @@ from core.enums.user_type import UserType
 
 class UserRepository(AuthUserRepository):
     user_type = UserType.USER.value
+
     def __init__(self):
         super().__init__()
         self.model = User

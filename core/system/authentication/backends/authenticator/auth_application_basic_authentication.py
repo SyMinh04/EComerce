@@ -15,9 +15,8 @@ class AuthApplicationBasicAuthentication(BasicAuthentication):
         """
         service = AuthApplicationService()
         application = service.get_application(client_id)
-        match = check_password(client_password, application.client_secret) if application else False
 
-        if not match:
+        if application.verify_application(client_password):
             raise AuthenticationFailed(_('error_client_credentials'))
 
         request.set_auth_application(application)

@@ -1,12 +1,11 @@
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 
-from core.serializers.requests import BaseRequestSerializer
 from ..repositories.auth_refresh_token_repository import AuthRefreshTokenRepository
 from ..repositories.auth_access_token_repository import AuthAccessTokenRepository
 
 
-class UserRefreshTokenSerializer(BaseRequestSerializer):
+class UserRefreshTokenSerializer(serializers.Serializer):
     grant_type = serializers.CharField(required=True, max_length=255)
     refresh_token = serializers.CharField(required=True)
     scope = serializers.CharField(required=True, max_length=255)

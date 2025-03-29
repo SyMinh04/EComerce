@@ -2,10 +2,9 @@ from rest_framework import serializers
 from django.contrib.auth import password_validation
 from django.utils.translation import gettext as _
 
-from core.serializers.requests import BaseRequestSerializer
 
 
-class ChangePasswordSerializer(BaseRequestSerializer):
+class ChangePasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
     new_password_confirm = serializers.CharField(required=True)

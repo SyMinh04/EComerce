@@ -17,8 +17,8 @@ class AuthUserRepository(BaseRepository):
         @return:
         """
         kwargs['user_type'] = self.user_type
-        if kwargs.get('password'):
-            kwargs['password'] = make_password(kwargs['password'])
+        # if kwargs.get('password'):
+        #     kwargs['password'] = make_password(kwargs['password'])
         return super().create(**kwargs)
 
     def find_by_email(self, email, is_active=None):

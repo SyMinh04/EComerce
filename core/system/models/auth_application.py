@@ -20,3 +20,11 @@ class AuthApplication(DjangoCassandraModel):
 
     class Meta:
         get_pk_field = 'uid'
+
+    def verify_application(self, client_secret):
+        """
+        Verify client_secret
+        :param client_secret:
+        :return:
+        """
+        return self.client_id == client_secret

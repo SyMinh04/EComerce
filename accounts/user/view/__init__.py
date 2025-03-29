@@ -1,4 +1,5 @@
-from .user_model_view_set import UserRegisterView, UserLoginView
+from .user_register_view_set import UserRegisterView
+from .user_login_view_set import UserLoginView
 
 __all__ = [
     'UserRegisterView',

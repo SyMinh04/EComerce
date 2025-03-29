@@ -1,9 +1,18 @@
 import json
-from rest_framework.views import APIView
+
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
+from django.utils.translation import gettext as _
+
+from core.system.authentication.backends.authenticator.auth_application_basic_authentication import \
+    AuthApplicationBasicAuthentication
 
 
-class AbstractUserAuthorizationTokenView(APIView):
-    serializer = None
+class AbstractUserAuthorizationTokenView(ViewSet):
+    authentication_classes = [AuthApplicationBasicAuthentication]
+
+    basic_serializer = None
+    request_serializer = None
     auth_service = None
     is_refresh_token = False
 
@@ -13,7 +22,7 @@ class AbstractUserAuthorizationTokenView(APIView):
         @param request:
         @return: AccessToken data
         """
-        serializer = self.serializer(data=request.data)
+        serializer = self.request_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
@@ -26,7 +35,8 @@ class AbstractUserAuthorizationTokenView(APIView):
         """
         Login by user credential
         """
-        token_data = self.auth_service.user_credential_login(request, **data)
+
+        token_data = self.auth_service.user_credential_login(request, data)
         return token_data
 
     def _refresh(self, request, data):
@@ -48,3 +58,15 @@ class AbstractUserAuthorizationTokenView(APIView):
         except json.JSONDecodeError:
             body_data = {}
         return {**body_data, **form_data}
+
+    def create_user(self, request):
+        """
+        Create new user
+        :param request:
+        :return:
+        """
+        serializer = self.request_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        self.auth_service.create_user(data)
+        return Response(_('register_user_success'))

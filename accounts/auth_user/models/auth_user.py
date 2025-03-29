@@ -96,7 +96,7 @@ class AuthUser(DjangoCassandraModel):
         :param raw_password:
         :return:
         """
-        return self.password == make_password(raw_password)
+        return self.password == raw_password
 
 
 
